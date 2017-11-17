@@ -28,7 +28,6 @@ public class PlayerController : MonoBehaviour {
 		transform.RotateAround (transform.position, new Vector3 (1, 0, 0), yrotation * deg);
 		transform.RotateAround (transform.position, new Vector3 (0, 1, 0), xrotation * deg);
 
-		float angle = transform.rotation.eulerAngles.y;
 		Vector3 force = Quaternion.Euler (0, xrotation * deg, 0) * new Vector3 (
 			Input.GetAxis ("Horizontal"),
 			0,
