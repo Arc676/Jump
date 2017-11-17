@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
 	private static readonly float deg = 180f / (float)Mathf.PI;
 
 	private bool canJump = true;
+	private bool grounded = true;
 
 	void Start() {
 		rigidBody = GetComponent <Rigidbody> ();
@@ -20,6 +21,13 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (!grounded && !canJump && Mathf.Abs (rigidBody.velocity.y) < 1) {
+			rigidBody.useGravity = false;
+			Vector3 v = rigidBody.velocity;
+			v.y = 0;
+			rigidBody.velocity = v;
+		}
+
 		float xrotate = Input.GetAxis ("Mouse X") * 0.1f;
 		xrotation += xrotate;
 
@@ -32,9 +40,9 @@ public class PlayerController : MonoBehaviour {
 
 		float vy = 0;
 		if (Input.GetButton ("Jump") && canJump) {
-			rigidBody.useGravity = false;
+			grounded = false;
 			vy = 1;
-		} else if (!rigidBody.useGravity) {
+		} else if (!grounded) {
 			canJump = false;
 		}
 
@@ -48,6 +56,7 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter(Collision colInfo) {
 		rigidBody.useGravity = true;
+		grounded = true;
 		canJump = true;
 	}
 
