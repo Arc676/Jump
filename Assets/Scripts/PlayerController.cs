@@ -28,6 +28,20 @@ public class PlayerController : MonoBehaviour {
 			rigidBody.velocity = v;
 		}
 
+		bool changed = false;
+		Vector3 pos = transform.position;
+		if (Mathf.Abs (pos.x + rigidBody.velocity.x) > 750) {
+			pos.x *= -1;
+			changed = true;
+		}
+		if (Mathf.Abs (pos.z + rigidBody.velocity.z) > 750) {
+			changed = true;
+			pos.z *= -1;
+		}
+		if (changed) {
+			transform.position = pos;
+		}
+
 		float xrotate = Input.GetAxis ("Mouse X") * 0.1f;
 		xrotation += xrotate;
 
@@ -38,19 +52,17 @@ public class PlayerController : MonoBehaviour {
 		transform.RotateAround (transform.position, new Vector3 (1, 0, 0), yrotation * deg);
 		transform.RotateAround (transform.position, new Vector3 (0, 1, 0), xrotation * deg);
 
-		float vy = 0;
+		float fy = 0;
 		if (Input.GetButton ("Jump") && canJump) {
 			grounded = false;
-			vy = 1;
+			fy = 1;
 		} else if (!grounded) {
 			canJump = false;
 		}
 
-		Vector3 force = Quaternion.Euler (0, xrotation * deg, 0) * new Vector3 (
-			Input.GetAxis ("Horizontal"),
-			vy,
-			Input.GetAxis ("Vertical")
-		) * 10;
+		float fx = grounded ? Input.GetAxis ("Horizontal") : 0;
+		float fz = grounded ? Input.GetAxis ("Vertical")   : 0;
+		Vector3 force = Quaternion.Euler (0, xrotation * deg, 0) * new Vector3 (fx, fy, fz) * 10;
 		rigidBody.AddForce (force);
 	}
 
