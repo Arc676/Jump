@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour {
 	private float yrotation;
 	private static readonly float deg = 180f / (float)Mathf.PI;
 
+	private bool isJumping = false;
 	private bool canJump = true;
 	private bool grounded = true;
 
@@ -56,9 +57,11 @@ public class PlayerController : MonoBehaviour {
 
 		float fy = 0;
 		if (Input.GetButton ("Jump") && canJump) {
+			isJumping = true;
 			grounded = false;
 			fy = 1;
 		} else if (!grounded) {
+			isJumping = false;
 			canJump = false;
 		}
 
@@ -72,6 +75,10 @@ public class PlayerController : MonoBehaviour {
 		rigidBody.useGravity = true;
 		grounded = true;
 		canJump = true;
+	}
+
+	void OnCollisionExit(Collision colInfo) {
+		canJump = isJumping;
 	}
 
 	void OnTriggerEnter(Collider other) {
