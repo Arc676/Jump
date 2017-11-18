@@ -111,6 +111,8 @@ public class PlayerController : MonoBehaviour {
 		flightTime = 0;
 		grounded = true;
 		canJump = true;
+		wakeUpLabel.gameObject.SetActive (false);
+		canWakeUp = false;
 	}
 
 	void OnCollisionExit(Collision colInfo) {
