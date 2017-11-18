@@ -49,10 +49,10 @@ public class PlayerController : MonoBehaviour {
 
 		if (!rigidBody.useGravity) {
 			flightTime += Time.deltaTime;
-			if (flightTime > 20) {
-				wakeUpLabel.gameObject.SetActive (true);
-				canWakeUp = true;
-			}
+		}
+		if (flightTime > 20 || transform.position.y < -100) {
+			wakeUpLabel.gameObject.SetActive (true);
+			canWakeUp = true;
 		}
 
 		if (canWakeUp && Input.GetKeyDown (KeyCode.X)) {
