@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour {
 	private bool canJump = true;
 	private bool grounded = true;
 
+	private int ballsObtained = 0;
+
 	void Start() {
 		rigidBody = GetComponent <Rigidbody> ();
 		Cursor.lockState = CursorLockMode.Locked;
@@ -60,8 +62,8 @@ public class PlayerController : MonoBehaviour {
 			canJump = false;
 		}
 
-		float fx = grounded ? Input.GetAxis ("Horizontal") : 0;
-		float fz = grounded ? Input.GetAxis ("Vertical")   : 0;
+		float fx = Input.GetAxis ("Horizontal") * (grounded ? 1 : 0.3f);
+		float fz = Input.GetAxis ("Vertical") * (grounded ? 1 : 0.3f);
 		Vector3 force = Quaternion.Euler (0, xrotation * deg, 0) * new Vector3 (fx, fy, fz) * 10;
 		rigidBody.AddForce (force);
 	}
@@ -70,6 +72,13 @@ public class PlayerController : MonoBehaviour {
 		rigidBody.useGravity = true;
 		grounded = true;
 		canJump = true;
+	}
+
+	void OnTriggerEnter(Collider other) {
+		if (other.CompareTag ("ScoreBall")) {
+			ballsObtained++;
+			Destroy (other.gameObject);
+		}
 	}
 
 }
