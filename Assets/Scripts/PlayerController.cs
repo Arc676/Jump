@@ -15,12 +15,15 @@ public class PlayerController : MonoBehaviour {
 	private bool isJumping = false;
 	private bool canJump = true;
 	private bool grounded = true;
+	private bool canMoveInAir = true;
 
 	private int ballsObtained = 0;
 
 	private bool canWakeUp = false;
 	private float flightTime = 0;
 	[SerializeField] private Text wakeUpLabel;
+
+	[SerializeField] private Text instructions;
 
 	void Start() {
 		rigidBody = GetComponent <Rigidbody> ();
@@ -29,6 +32,14 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (Input.GetKeyDown (KeyCode.H)) {
+			bool showing = instructions.gameObject.activeSelf;
+			instructions.gameObject.SetActive (!showing);
+		}
+		if (Input.GetKeyDown (KeyCode.J)) {
+			canMoveInAir = !canMoveInAir;
+		}
+
 		if (!grounded && !canJump && Mathf.Abs (rigidBody.velocity.y) < 1) {
 			rigidBody.useGravity = false;
 			Vector3 v = rigidBody.velocity;
@@ -88,8 +99,9 @@ public class PlayerController : MonoBehaviour {
 			canJump = false;
 		}
 
-		float fx = Input.GetAxis ("Horizontal") * (grounded ? 1 : 0.3f);
-		float fz = Input.GetAxis ("Vertical") * (grounded ? 1 : 0.3f);
+		float coefficient = (grounded ? 1 : (canMoveInAir ? 0.3f : 0));
+		float fx = Input.GetAxis ("Horizontal") * coefficient;
+		float fz = Input.GetAxis ("Vertical") * coefficient;
 		Vector3 force = Quaternion.Euler (0, xrotation * deg, 0) * new Vector3 (fx, fy, fz) * 10;
 		rigidBody.AddForce (force);
 	}
