@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
 
@@ -17,6 +18,10 @@ public class PlayerController : MonoBehaviour {
 
 	private int ballsObtained = 0;
 
+	private bool canWakeUp = false;
+	private float flightTime = 0;
+	[SerializeField] private Text wakeUpLabel;
+
 	void Start() {
 		rigidBody = GetComponent <Rigidbody> ();
 		Cursor.lockState = CursorLockMode.Locked;
@@ -29,6 +34,24 @@ public class PlayerController : MonoBehaviour {
 			Vector3 v = rigidBody.velocity;
 			v.y = 0;
 			rigidBody.velocity = v;
+		}
+
+		if (!rigidBody.useGravity) {
+			flightTime += Time.deltaTime;
+			if (flightTime > 20) {
+				wakeUpLabel.gameObject.SetActive (true);
+				canWakeUp = true;
+			}
+		}
+
+		if (canWakeUp && Input.GetKeyDown (KeyCode.X)) {
+			canWakeUp = false;
+			rigidBody.useGravity = true;
+			wakeUpLabel.gameObject.SetActive (false);
+			transform.position = new Vector3 (-22.6f, 26, 0);
+			rigidBody.velocity = Vector3.zero;
+			flightTime = 0;
+			grounded = true;
 		}
 
 		bool changed = false;
@@ -73,6 +96,7 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter(Collision colInfo) {
 		rigidBody.useGravity = true;
+		flightTime = 0;
 		grounded = true;
 		canJump = true;
 	}
