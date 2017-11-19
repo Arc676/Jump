@@ -43,13 +43,25 @@ public class PlayerController : MonoBehaviour {
 
 	[SerializeField] private GameObject uiText;
 
+	private float runTime = 0;
+	private float bestTime = float.MaxValue;
+	[SerializeField] private Text hiscoreLabel;
+	[SerializeField] private Text timeLabel;
+
 	void Start() {
 		rigidBody = GetComponent <Rigidbody> ();
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
+		if (PlayerPrefs.HasKey ("HiScore")) {
+			bestTime = PlayerPrefs.GetFloat ("HiScore");
+			hiscoreLabel.text = "Best time: " + bestTime;
+		}
 	}
 	
 	void Update () {
+		runTime += Time.deltaTime;
+		timeLabel.text = "Time: " + runTime;
+
 		if (Input.GetKeyDown (KeyCode.H)) {
 			bool showing = uiText.activeSelf;
 			uiText.SetActive (!showing);
@@ -77,6 +89,7 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		if (canWakeUp && Input.GetKeyDown (KeyCode.X)) {
+			runTime += 10;
 			respawn ();
 		}
 
@@ -138,6 +151,7 @@ public class PlayerController : MonoBehaviour {
 		ballsObtained = 0;
 		respawn ();
 		winText.gameObject.SetActive (false);
+		runTime = 0;
 	}
 
 	void OnCollisionEnter(Collision colInfo) {
@@ -159,6 +173,11 @@ public class PlayerController : MonoBehaviour {
 			other.gameObject.SetActive (false);
 			if (ballsObtained >= balls.Length) {
 				winText.gameObject.SetActive (true);
+				if (runTime < bestTime) {
+					bestTime = runTime;
+					hiscoreLabel.text = "Best time: " + bestTime;
+					PlayerPrefs.SetFloat ("HiScore", bestTime);
+				}
 			}
 		}
 	}
