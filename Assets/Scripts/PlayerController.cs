@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour {
 	private int ballsObtained = 0;
 	[SerializeField] private GameObject[] balls;
 
+	[SerializeField] private Text winText;
+
 	private bool canWakeUp = false;
 	private float flightTime = 0;
 	[SerializeField] private Text wakeUpLabel;
@@ -135,6 +137,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		ballsObtained = 0;
 		respawn ();
+		winText.gameObject.SetActive (false);
 	}
 
 	void OnCollisionEnter(Collision colInfo) {
@@ -154,6 +157,9 @@ public class PlayerController : MonoBehaviour {
 		if (other.CompareTag ("ScoreBall")) {
 			ballsObtained++;
 			other.gameObject.SetActive (false);
+			if (ballsObtained >= balls.Length) {
+				winText.gameObject.SetActive (true);
+			}
 		}
 	}
 
