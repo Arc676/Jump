@@ -1327,7 +1327,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1483790876}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 48.8, z: 0}
+  m_LocalPosition: {x: 0, y: 56.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1793445135}
@@ -1335,8 +1335,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 48.8}
-  m_SizeDelta: {x: 581.3, y: 150.2}
+  m_AnchoredPosition: {x: 0, y: 56.01}
+  m_SizeDelta: {x: 581.3, y: 164.61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1483790878
 MonoBehaviour:
@@ -1372,9 +1372,10 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Welcome to Jump!
 
-    In your dream, when you jump, gravity only slows you down until you glide. Then,
-    you can just float to wherever you want. You can''t walk on water. Collect the
-    8 yellow spheres in as little time as possible.
+    In your dream, when you jump, gravity only slows you down until you glide. Gravity
+    returns to normal after you hit something. Hold SPACE for longer to jump higher.
+    Then, you can just float to wherever you want. You can''t walk on water. Collect
+    the 8 yellow spheres in as little time as possible. Don''t get stuck in the air.
 
     Press J to toggle in-air movements (disabling this makes everything harder) (on
     by default).
