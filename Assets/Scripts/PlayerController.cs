@@ -1,4 +1,19 @@
-﻿using System.Collections;
+﻿//Written by Alessandro Vinciguerra <alesvinciguerra@gmail.com>
+//Copyright (C) 2017  Arc676/Alessandro Vinciguerra
+
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation (version 3).
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,12 +33,13 @@ public class PlayerController : MonoBehaviour {
 	private bool canMoveInAir = true;
 
 	private int ballsObtained = 0;
+	[SerializeField] private GameObject[] balls;
 
 	private bool canWakeUp = false;
 	private float flightTime = 0;
 	[SerializeField] private Text wakeUpLabel;
 
-	[SerializeField] private Text instructions;
+	[SerializeField] private GameObject uiText;
 
 	void Start() {
 		rigidBody = GetComponent <Rigidbody> ();
@@ -33,11 +49,14 @@ public class PlayerController : MonoBehaviour {
 	
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.H)) {
-			bool showing = instructions.gameObject.activeSelf;
-			instructions.gameObject.SetActive (!showing);
+			bool showing = uiText.activeSelf;
+			uiText.SetActive (!showing);
 		}
 		if (Input.GetKeyDown (KeyCode.J)) {
 			canMoveInAir = !canMoveInAir;
+		}
+		if (Input.GetKey (KeyCode.R) && Input.GetKey (KeyCode.P)) {
+			restart ();
 		}
 
 		if (!grounded && !canJump && Mathf.Abs (rigidBody.velocity.y) < 1) {
@@ -56,13 +75,7 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		if (canWakeUp && Input.GetKeyDown (KeyCode.X)) {
-			canWakeUp = false;
-			rigidBody.useGravity = true;
-			wakeUpLabel.gameObject.SetActive (false);
-			transform.position = new Vector3 (-22.6f, 26, 0);
-			rigidBody.velocity = Vector3.zero;
-			flightTime = 0;
-			grounded = true;
+			respawn ();
 		}
 
 		bool changed = false;
@@ -106,6 +119,24 @@ public class PlayerController : MonoBehaviour {
 		rigidBody.AddForce (force);
 	}
 
+	void respawn() {
+		canWakeUp = false;
+		rigidBody.useGravity = true;
+		wakeUpLabel.gameObject.SetActive (false);
+		transform.position = new Vector3 (-22.6f, 26, 0);
+		rigidBody.velocity = Vector3.zero;
+		flightTime = 0;
+		grounded = true;
+	}
+
+	void restart() {
+		foreach (GameObject obj in balls) {
+			obj.SetActive (true);
+		}
+		ballsObtained = 0;
+		respawn ();
+	}
+
 	void OnCollisionEnter(Collision colInfo) {
 		rigidBody.useGravity = true;
 		flightTime = 0;
@@ -122,7 +153,7 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.CompareTag ("ScoreBall")) {
 			ballsObtained++;
-			Destroy (other.gameObject);
+			other.gameObject.SetActive (false);
 		}
 	}
 
