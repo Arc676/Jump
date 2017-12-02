@@ -1,4 +1,4 @@
-﻿//Written by Alessandro Vinciguerra <alesvinciguerra@gmail.com>
+//Written by Alessandro Vinciguerra <alesvinciguerra@gmail.com>
 //Copyright (C) 2017  Arc676/Alessandro Vinciguerra
 
 //This program is free software: you can redistribute it and/or modify
@@ -17,10 +17,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Valve.VR;
 
 public class PlayerController : MonoBehaviour {
 
 	private Rigidbody rigidBody;
+
+	SteamVR_Controller.Device device;
+	SteamVR_TrackedObject controller;
 
 	//transform data
 	private float xrotation;
@@ -55,6 +59,10 @@ public class PlayerController : MonoBehaviour {
 		if (PlayerPrefs.HasKey ("HiScore")) {
 			bestTime = PlayerPrefs.GetFloat ("HiScore");
 			hiscoreLabel.text = "Best time: " + bestTime;
+		}
+		controller = gameObject.GetComponentsInChildren<SteamVR_TrackedObject>()[0];
+		if (controller == null) {
+			Debug.Log("controller is null!");
 		}
 	}
 	
@@ -130,6 +138,14 @@ public class PlayerController : MonoBehaviour {
 		float coefficient = (grounded ? 1 : (canMoveInAir ? 0.3f : 0));
 		float fx = Input.GetAxis ("Horizontal") * coefficient;
 		float fz = Input.GetAxis ("Vertical") * coefficient;
+
+		device = SteamVR_Controller.Input(4);//(int)controller.index);
+		if (device.GetTouch(SteamVR_Controller.ButtonMask.Touchpad)) {
+			Vector2 touchpad = device.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad);
+			fx = touchpad.y * 5f;
+			fz = touchpad.x * 5f;
+		}
+
 		Vector3 force = Quaternion.Euler (0, xrotation * deg, 0) * new Vector3 (fx, fy, fz) * 10;
 		rigidBody.AddForce (force);
 	}
