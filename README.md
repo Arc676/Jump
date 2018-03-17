@@ -8,4 +8,6 @@ The comic below, created by Randall Munroe, is available under [CC-BY-NC 2.5](ht
 
 ![XKCD comic](https://imgs.xkcd.com/comics/jump.png)
 
-Project available under GPLv3, but not the comic (obviously).
+Project available under GPLv3, but not the comic (obviously). Some assets were created by me.
+
+Compiling Jump requires the SteamVR assets, obtainable from the Unity asset store. These assets are not redistributed here.
